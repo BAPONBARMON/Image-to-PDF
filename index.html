@@ -9,79 +9,59 @@
 
   <style>
     :root {
-      --bg: #000000;
-      --panel: #020202;
+      --bg: #000;
+      --panel: #020502;
       --neon: #00ff33;
       --neon-soft: #00ff3366;
       --text-soft: #7dff9c;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
+      background: radial-gradient(circle at top, #00200f 0, #000 50%);
       color: var(--neon);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-    }
-
-    a {
-      color: var(--neon);
-      text-decoration: none;
-    }
-
-    /* Main wrapper */
-    .wrapper {
-      flex: 1;
-      padding: 16px 10px 24px;
-      display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
+      font-family: monospace;
+      padding: 20px;
     }
 
     .panel {
       width: 100%;
-      max-width: 900px;
+      max-width: 820px;
       background: var(--panel);
       border: 2px solid var(--neon);
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 0 20px #00ff3320;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 0 20px #00ff3350;
     }
 
     .panel-title {
       text-align: center;
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .panel-sub {
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-soft);
-      margin-bottom: 16px;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      text-shadow: 0 0 10px var(--neon);
     }
 
     label {
-      font-size: 13px;
-      margin-bottom: 4px;
       display: block;
+      margin-bottom: 6px;
       color: var(--neon);
+      font-size: 14px;
     }
 
     input[type="file"] {
       width: 100%;
       background: #000;
       border: 1px solid var(--neon-soft);
-      color: var(--text-soft);
-      padding: 6px;
+      padding: 8px;
       border-radius: 6px;
+      color: var(--text-soft);
+      margin-bottom: 4px;
       font-size: 12px;
     }
 
@@ -90,199 +70,147 @@
       color: var(--neon);
       border: 1px solid var(--neon-soft);
       padding: 6px 10px;
-      margin-right: 8px;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 12px;
+      margin-right: 8px;
     }
 
-    input::file-selector-button:hover {
-      background: #003812;
-    }
-
-    .btn-row {
-      display: flex;
-      margin: 14px 0;
+    #fileInfo {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-bottom: 8px;
     }
 
     .btn {
-      flex: 1;
-      padding: 8px;
-      border-radius: 6px;
-      border: 1px solid var(--neon-soft);
+      width: 100%;
+      padding: 10px;
       background: #001a09;
+      border: 1px solid var(--neon-soft);
       color: var(--neon);
-      font-size: 13px;
-      font-weight: 600;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 700;
       cursor: pointer;
-      text-align: center;
-      transition: 0.15s;
+      transition: 0.2s;
+      margin-top: 10px;
     }
 
     .btn:hover {
       background: #003812;
-      box-shadow: 0 0 10px #00ff3340;
       transform: scale(1.02);
+      box-shadow: 0 0 10px var(--neon);
     }
 
-    #imageCount {
-      font-size: 11px;
-      color: var(--text-soft);
-      margin-top: 6px;
-    }
-
-    /* Info log */
     #info {
-      margin-top: 10px;
-      padding: 8px;
-      border-radius: 6px;
-      border: 1px solid var(--neon-soft);
-      background: #000;
-      font-size: 11px;
-      color: var(--text-soft);
+      margin-top: 12px;
+      display: none;
       white-space: pre-line;
-      display: none;
-    }
-
-    /* PDF area */
-    .pdf-area {
-      margin-top: 16px;
-      display: none;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .pdf-preview-box {
-      flex: 2;
-      min-width: 240px;
-      border: 1px solid var(--neon-soft);
-      border-radius: 8px;
-      background: #000;
-      padding: 6px;
-    }
-
-    #pdfPreview {
-      width: 100%;
-      height: 280px;
-      border: none;
-      border-radius: 4px;
-      background: #000;
-    }
-
-    .section-title {
-      font-size: 13px;
-      margin-bottom: 6px;
-      color: var(--text-soft);
-    }
-
-    .pdf-info-box {
-      flex: 1;
-      min-width: 200px;
-      border: 1px solid var(--neon-soft);
-      border-radius: 8px;
-      background: #000;
-      padding: 8px 10px;
       font-size: 12px;
+      padding: 10px;
+      background: #000;
+      border: 1px solid var(--neon-soft);
+      border-radius: 6px;
       color: var(--text-soft);
     }
 
-    .pdf-detail-row {
+    .pdf-details-box {
+      margin-top: 18px;
+      display: none;
+      background: #000;
+      border: 2px solid var(--neon-soft);
+      border-radius: 10px;
+      padding: 14px;
+    }
+
+    .detail-row {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
+      font-size: 14px;
     }
 
-    .pdf-detail-label {
+    .label {
       color: var(--neon);
     }
 
-    .download-btn {
-      margin-top: 10px;
-      width: 100%;
-      padding: 7px;
-      border-radius: 6px;
-      border: 1px solid var(--neon-soft);
-      background: #001a09;
-      color: var(--neon);
-      font-size: 13px;
-      font-weight: 600;
-      text-align: center;
-      cursor: pointer;
+    #downloadLink {
       display: none;
+      margin-top: 14px;
+      padding: 10px;
+      background: #001a09;
+      border: 1px solid var(--neon-soft);
+      color: var(--neon);
+      border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
       text-decoration: none;
     }
 
-    .download-btn:hover {
+    #downloadLink:hover {
       background: #003812;
-      box-shadow: 0 0 10px #00ff3340;
+      transform: scale(1.02);
+      box-shadow: 0 0 10px var(--neon);
     }
 
     footer {
-      border-top: 1px solid var(--neon-soft);
-      padding: 8px 0 10px;
+      margin-top: 18px;
       text-align: center;
-      font-size: 11px;
+      font-size: 12px;
+      padding: 10px 0 0;
       color: var(--text-soft);
+      width: 100%;
+      max-width: 820px;
+      border-top: 1px solid var(--neon-soft);
+      text-shadow: 0 0 6px #00ff3340;
+    }
+
+    footer b {
+      color: var(--neon);
     }
   </style>
 </head>
+
 <body>
 
-  <!-- सिर्फ टूल का पैनल -->
-  <div class="wrapper">
-    <div class="panel">
-      <div class="panel-title">Image to PDF Converter</div>
-      <div class="panel-sub">Upload images • Auto centered pages • Preview & details</div>
+  <div class="panel">
+    <div class="panel-title">Image to PDF Converter</div>
 
-      <label for="imageUpload">Select images (max 100)</label>
-      <input type="file" id="imageUpload" accept="image/*" multiple />
-      <div id="imageCount">0 files selected</div>
+    <label for="imageUpload">Select images (max 100)</label>
+    <input type="file" id="imageUpload" accept="image/*" multiple />
+    <div id="fileInfo">0 files selected</div>
 
-      <div class="btn-row">
-        <button id="convertBtn" class="btn">
-          ▶ Create PDF & Show Preview
-        </button>
+    <button id="convertBtn" class="btn">▶ Generate PDF</button>
+
+    <pre id="info"></pre>
+
+    <!-- PDF DETAILS ONLY -->
+    <div class="pdf-details-box" id="detailsBox">
+      <div class="detail-row">
+        <span class="label">Pages:</span>
+        <span id="detailPages">0</span>
       </div>
 
-      <pre id="info"></pre>
-
-      <!-- PDF preview + details (sirf generate ke baad dikhega) -->
-      <div id="pdfArea" class="pdf-area">
-        <div class="pdf-preview-box">
-          <div class="section-title">PDF preview</div>
-          <iframe id="pdfPreview"></iframe>
-        </div>
-
-        <div class="pdf-info-box">
-          <div class="section-title">PDF details</div>
-
-          <div class="pdf-detail-row">
-            <span class="pdf-detail-label">Pages:</span>
-            <span id="detailPages">0</span>
-          </div>
-          <div class="pdf-detail-row">
-            <span class="pdf-detail-label">File size:</span>
-            <span id="detailSize">0 KB</span>
-          </div>
-          <div class="pdf-detail-row">
-            <span class="pdf-detail-label">Images used:</span>
-            <span id="detailImages">0</span>
-          </div>
-          <div class="pdf-detail-row">
-            <span class="pdf-detail-label">Created in:</span>
-            <span id="detailTime">0 s</span>
-          </div>
-
-          <a id="downloadLink" class="download-btn" download="converted.pdf">
-            ⬇ Download PDF
-          </a>
-        </div>
+      <div class="detail-row">
+        <span class="label">File Size:</span>
+        <span id="detailSize">0 KB</span>
       </div>
+
+      <div class="detail-row">
+        <span class="label">Images Used:</span>
+        <span id="detailImages">0</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="label">Created In:</span>
+        <span id="detailTime">0 s</span>
+      </div>
+
+      <a id="downloadLink" download="converted.pdf">⬇ Download PDF</a>
     </div>
   </div>
 
   <footer>
-    powerf by <b>BAPON BARMON</b>
+    Powered by <b>BAPON BARMON</b>
   </footer>
 
   <script>
@@ -290,58 +218,56 @@
 
     const imageUpload = document.getElementById("imageUpload");
     const convertBtn = document.getElementById("convertBtn");
-    const imageCount = document.getElementById("imageCount");
     const info = document.getElementById("info");
-
-    const pdfArea = document.getElementById("pdfArea");
-    const pdfPreview = document.getElementById("pdfPreview");
+    const detailsBox = document.getElementById("detailsBox");
     const downloadLink = document.getElementById("downloadLink");
+    const fileInfo = document.getElementById("fileInfo");
 
     const detailPages = document.getElementById("detailPages");
     const detailSize = document.getElementById("detailSize");
     const detailImages = document.getElementById("detailImages");
     const detailTime = document.getElementById("detailTime");
 
-    let imageFiles = [];
+    let files = [];
     let currentPdfUrl = null;
 
     imageUpload.addEventListener("change", () => {
-      imageFiles = Array.from(imageUpload.files).slice(0, 100);
-      imageCount.textContent = imageFiles.length + " files selected";
-      pdfArea.style.display = "none";
-      info.style.display = "none";
+      files = [...imageUpload.files].slice(0, 100);
+      fileInfo.textContent = `${files.length} file(s) selected`;
+      // reset old details if any
+      detailsBox.style.display = "none";
       downloadLink.style.display = "none";
+      info.style.display = "none";
       if (currentPdfUrl) {
         URL.revokeObjectURL(currentPdfUrl);
         currentPdfUrl = null;
-        pdfPreview.src = "";
       }
     });
 
     convertBtn.addEventListener("click", async () => {
-      if (imageFiles.length === 0) {
+      if (files.length === 0) {
         alert("Please select images first.");
         return;
       }
 
-      const start = performance.now();
-      info.textContent = "Creating PDF...\n";
       info.style.display = "block";
+      info.textContent = "Creating PDF...\n";
 
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4"
-      });
+      const start = performance.now();
+      const pdf = new jsPDF("p", "mm", "a4");
 
       const pageW = pdf.internal.pageSize.getWidth();
       const pageH = pdf.internal.pageSize.getHeight();
 
-      for (let i = 0; i < imageFiles.length; i++) {
-        const data = await fileToDataURL(imageFiles[i]);
-        const img = await loadImage(data);
+      // 90% usable area so har side se thoda margin रहे
+      const usableW = pageW * 0.90;
+      const usableH = pageH * 0.90;
 
-        const scale = Math.min(pageW / img.width, pageH / img.height);
+      for (let i = 0; i < files.length; i++) {
+        const base64 = await fileToBase64(files[i]);
+        const img = await loadImg(base64);
+
+        const scale = Math.min(usableW / img.width, usableH / img.height);
         const w = img.width * scale;
         const h = img.height * scale;
 
@@ -351,48 +277,40 @@
         if (i > 0) pdf.addPage();
         pdf.addImage(img, "JPEG", x, y, w, h);
 
-        info.textContent += `Page ${i + 1}/${imageFiles.length} added\n`;
+        info.textContent += `Page ${i + 1}/${files.length} done\n`;
       }
 
       const blob = pdf.output("blob");
+      const url = URL.createObjectURL(blob);
+      currentPdfUrl = url;
+
+      const sizeKB = (blob.size / 1024).toFixed(1);
       const timeSec = ((performance.now() - start) / 1000).toFixed(2);
 
-      if (currentPdfUrl) URL.revokeObjectURL(currentPdfUrl);
-      currentPdfUrl = URL.createObjectURL(blob);
-
-      pdfPreview.src = currentPdfUrl;
-      pdfArea.style.display = "flex";
-
-      const sizeKB = blob.size / 1024;
-      const sizeText = sizeKB > 1024
-        ? (sizeKB / 1024).toFixed(2) + " MB"
-        : sizeKB.toFixed(1) + " KB";
-
-      detailPages.textContent = imageFiles.length;
-      detailImages.textContent = imageFiles.length;
-      detailSize.textContent = sizeText;
+      detailPages.textContent = files.length;
+      detailImages.textContent = files.length;
+      detailSize.textContent = sizeKB + " KB";
       detailTime.textContent = timeSec + " s";
 
-      downloadLink.href = currentPdfUrl;
+      downloadLink.href = url;
       downloadLink.style.display = "block";
+      detailsBox.style.display = "block";
 
-      info.textContent += "\nPDF created successfully ✔";
+      info.textContent += "\nPDF Ready ✔";
     });
 
-    function fileToDataURL(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
+    function fileToBase64(file) {
+      return new Promise(res => {
+        const r = new FileReader();
+        r.onload = () => res(r.result);
+        r.readAsDataURL(file);
       });
     }
 
-    function loadImage(src) {
-      return new Promise((resolve, reject) => {
+    function loadImg(src) {
+      return new Promise(res => {
         const img = new Image();
-        img.onload = () => resolve(img);
-        img.onerror = reject;
+        img.onload = () => res(img);
         img.src = src;
       });
     }
