@@ -1,98 +1,399 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Image to PDF Converter (100 Max)</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BAPON BARMON | Image to PDF</title>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #000000;
+      --panel: #020202;
+      --neon: #00ff33;
+      --neon-soft: #00ff3366;
+      --text-soft: #7dff9c;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--neon);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      color: var(--neon);
+      text-decoration: none;
+    }
+
+    /* Main wrapper */
+    .wrapper {
+      flex: 1;
+      padding: 16px 10px 24px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .panel {
+      width: 100%;
+      max-width: 900px;
+      background: var(--panel);
+      border: 2px solid var(--neon);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 0 20px #00ff3320;
+    }
+
+    .panel-title {
+      text-align: center;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .panel-sub {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-bottom: 16px;
+    }
+
+    label {
+      font-size: 13px;
+      margin-bottom: 4px;
+      display: block;
+      color: var(--neon);
+    }
+
+    input[type="file"] {
+      width: 100%;
+      background: #000;
+      border: 1px solid var(--neon-soft);
+      color: var(--text-soft);
+      padding: 6px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+
+    input::file-selector-button {
+      background: #001a09;
+      color: var(--neon);
+      border: 1px solid var(--neon-soft);
+      padding: 6px 10px;
+      margin-right: 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    input::file-selector-button:hover {
+      background: #003812;
+    }
+
+    .btn-row {
+      display: flex;
+      margin: 14px 0;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--neon-soft);
+      background: #001a09;
+      color: var(--neon);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: 0.15s;
+    }
+
+    .btn:hover {
+      background: #003812;
+      box-shadow: 0 0 10px #00ff3340;
+      transform: scale(1.02);
+    }
+
+    #imageCount {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-top: 6px;
+    }
+
+    /* Info log */
+    #info {
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--neon-soft);
+      background: #000;
+      font-size: 11px;
+      color: var(--text-soft);
+      white-space: pre-line;
+      display: none;
+    }
+
+    /* PDF area */
+    .pdf-area {
+      margin-top: 16px;
+      display: none;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .pdf-preview-box {
+      flex: 2;
+      min-width: 240px;
+      border: 1px solid var(--neon-soft);
+      border-radius: 8px;
+      background: #000;
+      padding: 6px;
+    }
+
+    #pdfPreview {
+      width: 100%;
+      height: 280px;
+      border: none;
+      border-radius: 4px;
+      background: #000;
+    }
+
+    .section-title {
+      font-size: 13px;
+      margin-bottom: 6px;
+      color: var(--text-soft);
+    }
+
+    .pdf-info-box {
+      flex: 1;
+      min-width: 200px;
+      border: 1px solid var(--neon-soft);
+      border-radius: 8px;
+      background: #000;
+      padding: 8px 10px;
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .pdf-detail-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .pdf-detail-label {
+      color: var(--neon);
+    }
+
+    .download-btn {
+      margin-top: 10px;
+      width: 100%;
+      padding: 7px;
+      border-radius: 6px;
+      border: 1px solid var(--neon-soft);
+      background: #001a09;
+      color: var(--neon);
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      display: none;
+      text-decoration: none;
+    }
+
+    .download-btn:hover {
+      background: #003812;
+      box-shadow: 0 0 10px #00ff3340;
+    }
+
+    footer {
+      border-top: 1px solid var(--neon-soft);
+      padding: 8px 0 10px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-800 min-h-screen p-6">
-  <div class="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-6">
-    <h1 class="text-2xl font-bold text-center mb-6">🖼️ Image to PDF Converter</h1>
+<body>
 
-    <input type="file" id="imageUpload" accept="image/*" multiple class="w-full mb-4 p-2 rounded border border-gray-300"/>
+  <!-- सिर्फ टूल का पैनल -->
+  <div class="wrapper">
+    <div class="panel">
+      <div class="panel-title">Image to PDF Converter</div>
+      <div class="panel-sub">Upload images • Auto centered pages • Preview & details</div>
 
-    <p class="text-sm text-gray-600 mb-2">Select up to 100 images. Each image will be on a new PDF page.</p>
+      <label for="imageUpload">Select images (max 100)</label>
+      <input type="file" id="imageUpload" accept="image/*" multiple />
+      <div id="imageCount">0 files selected</div>
 
-    <div id="preview" class="flex flex-wrap gap-2 mb-4"></div>
+      <div class="btn-row">
+        <button id="convertBtn" class="btn">
+          ▶ Create PDF & Show Preview
+        </button>
+      </div>
 
-    <button id="convertBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded">📄 Convert to PDF</button>
+      <pre id="info"></pre>
 
-    <a id="downloadLink" class="hidden mt-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded block text-center" download="converted.pdf">⬇️ Download Merged PDF</a>
+      <!-- PDF preview + details (sirf generate ke baad dikhega) -->
+      <div id="pdfArea" class="pdf-area">
+        <div class="pdf-preview-box">
+          <div class="section-title">PDF preview</div>
+          <iframe id="pdfPreview"></iframe>
+        </div>
 
-    <div id="info" class="hidden mt-4 text-sm text-gray-800 bg-gray-200 p-4 rounded"></div>
+        <div class="pdf-info-box">
+          <div class="section-title">PDF details</div>
+
+          <div class="pdf-detail-row">
+            <span class="pdf-detail-label">Pages:</span>
+            <span id="detailPages">0</span>
+          </div>
+          <div class="pdf-detail-row">
+            <span class="pdf-detail-label">File size:</span>
+            <span id="detailSize">0 KB</span>
+          </div>
+          <div class="pdf-detail-row">
+            <span class="pdf-detail-label">Images used:</span>
+            <span id="detailImages">0</span>
+          </div>
+          <div class="pdf-detail-row">
+            <span class="pdf-detail-label">Created in:</span>
+            <span id="detailTime">0 s</span>
+          </div>
+
+          <a id="downloadLink" class="download-btn" download="converted.pdf">
+            ⬇ Download PDF
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <footer>
+    powerf by <b>BAPON BARMON</b>
+  </footer>
 
   <script>
     const { jsPDF } = window.jspdf;
+
     const imageUpload = document.getElementById("imageUpload");
     const convertBtn = document.getElementById("convertBtn");
-    const downloadLink = document.getElementById("downloadLink");
-    const preview = document.getElementById("preview");
+    const imageCount = document.getElementById("imageCount");
     const info = document.getElementById("info");
 
+    const pdfArea = document.getElementById("pdfArea");
+    const pdfPreview = document.getElementById("pdfPreview");
+    const downloadLink = document.getElementById("downloadLink");
+
+    const detailPages = document.getElementById("detailPages");
+    const detailSize = document.getElementById("detailSize");
+    const detailImages = document.getElementById("detailImages");
+    const detailTime = document.getElementById("detailTime");
+
     let imageFiles = [];
+    let currentPdfUrl = null;
 
     imageUpload.addEventListener("change", () => {
       imageFiles = Array.from(imageUpload.files).slice(0, 100);
-      preview.innerHTML = '';
-      info.classList.add("hidden");
-      downloadLink.classList.add("hidden");
-
-      imageFiles.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = e => {
-          const img = document.createElement("img");
-          img.src = e.target.result;
-          img.className = "w-20 h-20 object-cover border border-gray-300 rounded";
-          preview.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-      });
+      imageCount.textContent = imageFiles.length + " files selected";
+      pdfArea.style.display = "none";
+      info.style.display = "none";
+      downloadLink.style.display = "none";
+      if (currentPdfUrl) {
+        URL.revokeObjectURL(currentPdfUrl);
+        currentPdfUrl = null;
+        pdfPreview.src = "";
+      }
     });
 
     convertBtn.addEventListener("click", async () => {
       if (imageFiles.length === 0) {
-        alert("Please upload images first.");
+        alert("Please select images first.");
         return;
       }
 
-      const pdf = new jsPDF();
+      const start = performance.now();
+      info.textContent = "Creating PDF...\n";
+      info.style.display = "block";
+
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4"
+      });
+
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
 
       for (let i = 0; i < imageFiles.length; i++) {
-        const data = await readAsDataURL(imageFiles[i]);
-        const img = new Image();
-        img.src = data;
-        await img.decode();
+        const data = await fileToDataURL(imageFiles[i]);
+        const img = await loadImage(data);
 
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = (img.height * pageWidth) / img.width;
+        const scale = Math.min(pageW / img.width, pageH / img.height);
+        const w = img.width * scale;
+        const h = img.height * scale;
+
+        const x = (pageW - w) / 2;
+        const y = (pageH - h) / 2;
 
         if (i > 0) pdf.addPage();
-        pdf.addImage(img, 'JPEG', 0, 0, pageWidth, pageHeight);
+        pdf.addImage(img, "JPEG", x, y, w, h);
+
+        info.textContent += `Page ${i + 1}/${imageFiles.length} added\n`;
       }
 
       const blob = pdf.output("blob");
-      const url = URL.createObjectURL(blob);
+      const timeSec = ((performance.now() - start) / 1000).toFixed(2);
 
-      downloadLink.href = url;
-      downloadLink.classList.remove("hidden");
+      if (currentPdfUrl) URL.revokeObjectURL(currentPdfUrl);
+      currentPdfUrl = URL.createObjectURL(blob);
 
-      info.innerHTML = `
-        ✅ PDF created successfully!<br>
-        🖼️ Total Images: <strong>${imageFiles.length}</strong><br>
-        📦 PDF Size: ${(blob.size / 1024).toFixed(2)} KB
-      `;
-      info.classList.remove("hidden");
+      pdfPreview.src = currentPdfUrl;
+      pdfArea.style.display = "flex";
+
+      const sizeKB = blob.size / 1024;
+      const sizeText = sizeKB > 1024
+        ? (sizeKB / 1024).toFixed(2) + " MB"
+        : sizeKB.toFixed(1) + " KB";
+
+      detailPages.textContent = imageFiles.length;
+      detailImages.textContent = imageFiles.length;
+      detailSize.textContent = sizeText;
+      detailTime.textContent = timeSec + " s";
+
+      downloadLink.href = currentPdfUrl;
+      downloadLink.style.display = "block";
+
+      info.textContent += "\nPDF created successfully ✔";
     });
 
-    function readAsDataURL(file) {
+    function fileToDataURL(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result);
         reader.onerror = reject;
         reader.readAsDataURL(file);
+      });
+    }
+
+    function loadImage(src) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
       });
     }
   </script>
