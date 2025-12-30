@@ -20,7 +20,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
   --neon:#00ff7f;
   --soft:#00ff7f55;
 }
-
 *{box-sizing:border-box;font-family:Consolas,"Fira Code",monospace}
 
 body{
@@ -167,7 +166,7 @@ a{
     <span id="sizeText">0 KB</span>
   </div>
 
-  <button id="wantCompress">Want Compress PDF ?</button>
+  <button id="wantCompress">Want compress PDF ?</button>
   <input id="rename" placeholder="RENAME PDF (OPTIONAL)">
   <a id="download">DOWNLOAD PDF</a>
 </div>
@@ -215,10 +214,12 @@ const done=document.getElementById("done");
 
 let activeBlob=null;
 
-/* A4 */
-const PAGE_W=210, PAGE_H=297, MARGIN=8;
+/* ===== SINGLE MARGIN SOURCE ===== */
+const PAGE_W=210;
+const PAGE_H=297;
+const MARGIN=8; // 🔥 SAME for normal & compress
 
-/* IMAGE → PDF */
+/* ===== IMAGE → PDF ===== */
 genPdf.onclick=()=>{
   if(!imgInput.files.length) return alert("Select images");
   if(imgInput.files.length>100) return alert("Max 100 images");
@@ -256,12 +257,11 @@ function updateMain(){
   document.getElementById("details").style.display="block";
 }
 
-/* rename live */
 download.addEventListener("click",()=>{
   download.download=(rename.value.trim()||"converted")+".pdf";
 });
 
-/* WANT COMPRESS spinner */
+/* ===== WANT COMPRESS ===== */
 wantCompress.onclick=()=>{
   overlay.style.display="flex";
   cmpSpin.style.display="block";
@@ -271,7 +271,7 @@ wantCompress.onclick=()=>{
   setTimeout(()=>cmpSpin.style.display="none",1500);
 };
 
-/* HIGH ACCURACY COMPRESS */
+/* ===== COMPRESS ===== */
 doCompress.onclick=async()=>{
   const target=Number(targetKB.value);
   if(!target||target<10) return alert("Enter target size");
@@ -317,17 +317,9 @@ doCompress.onclick=async()=>{
 
     const blob=pdf.output("blob");
     const diff=Math.abs(blob.size-targetBytes);
-
-    if(diff<bestDiff){
-      bestDiff=diff;
-      bestBlob=blob;
-    }
-
-    if(blob.size>targetBytes){
-      qHigh=q; scaleHigh=scaleRender;
-    }else{
-      qLow=q; scaleLow=scaleRender;
-    }
+    if(diff<bestDiff){bestDiff=diff;bestBlob=blob;}
+    if(blob.size>targetBytes){qHigh=q;scaleHigh=scaleRender;}
+    else{qLow=q;scaleLow=scaleRender;}
   }
 
   activeBlob=bestBlob;
