@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Image → PDF + Exact Compressor</title>
+<title>Image → PDF (A4 Safe + Real Compress)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- pdf.js -->
@@ -16,123 +16,65 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-:root{
-  --neon:#00ff7f;
-  --soft:#00ff7f55;
-  --bg:#000;
-}
-*{box-sizing:border-box;font-family:Consolas,"Fira Code",monospace}
+:root{--neon:#00ff7f;--soft:#00ff7f55}
+*{box-sizing:border-box;font-family:Consolas,monospace}
 
 body{
-  margin:0;
-  min-height:100vh;
-  background:
-    repeating-linear-gradient(
-      0deg,
-      #000 0,
-      #000 2px,
-      #001a0a 3px
-    );
-  color:var(--neon);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:12px;
+margin:0;min-height:100vh;
+background:radial-gradient(circle at top,#00200f 0,#000 55%);
+color:var(--neon);
+display:flex;justify-content:center;align-items:center;
+padding:12px;
 }
 
 .panel{
-  width:100%;
-  max-width:860px;
-  background:radial-gradient(circle at top,#021a0a,#000);
-  border:1px solid var(--neon);
-  border-radius:16px;
-  padding:16px;
-  box-shadow:
-    0 0 20px #00ff7f55,
-    inset 0 0 12px #00ff7f22;
-  animation:pulse 4s infinite;
+width:100%;max-width:860px;
+background:#020502;border:1px solid var(--neon);
+border-radius:16px;padding:16px;
+box-shadow:0 0 20px #00ff7f55;
 }
 
-@keyframes pulse{
-  0%,100%{box-shadow:0 0 16px #00ff7f55}
-  50%{box-shadow:0 0 28px #00ff7faa}
-}
+h1{text-align:center;text-shadow:0 0 12px var(--neon)}
 
-h1{
-  text-align:center;
-  margin:6px 0 14px;
-  letter-spacing:.25em;
-  text-transform:uppercase;
-  text-shadow:0 0 12px var(--neon);
-}
-
-input,button,select{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  background:#000;
-  border:1px solid var(--soft);
-  border-radius:8px;
-  color:var(--neon);
+input,button{
+width:100%;padding:12px;margin-top:10px;
+background:#000;border:1px solid var(--soft);
+border-radius:8px;color:var(--neon)
 }
 
 button{
-  background:linear-gradient(180deg,#002b16,#001a0d);
-  font-weight:bold;
-  cursor:pointer;
+background:#001a0d;font-weight:bold;cursor:pointer
 }
-button:hover{
-  box-shadow:0 0 12px var(--neon);
-}
+button:hover{box-shadow:0 0 12px var(--neon)}
 
 .spinner{
-  display:none;
-  width:46px;height:46px;
-  margin:14px auto;
-  border:3px solid #003820;
-  border-top:3px solid var(--neon);
-  border-radius:50%;
-  animation:spin .8s linear infinite;
+display:none;width:46px;height:46px;
+margin:14px auto;
+border:3px solid #003820;border-top:3px solid var(--neon);
+border-radius:50%;animation:spin .8s linear infinite
 }
 @keyframes spin{to{transform:rotate(360deg)}}
 
-.row{
-  display:flex;
-  justify-content:space-between;
-  margin:8px 0;
-}
+.row{display:flex;justify-content:space-between;margin:8px 0}
 
 a{
-  display:none;
-  margin-top:10px;
-  padding:12px;
-  background:#001a0d;
-  border:1px solid var(--soft);
-  color:var(--neon);
-  text-decoration:none;
-  text-align:center;
-  border-radius:8px;
+display:none;margin-top:10px;padding:12px;
+background:#001a0d;border:1px solid var(--soft);
+color:var(--neon);text-decoration:none;
+text-align:center;border-radius:8px
 }
 
-/* POPUP */
+/* popup */
 .overlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:#000d;
-  backdrop-filter:blur(6px);
-  justify-content:center;
-  align-items:center;
-  z-index:99;
+display:none;position:fixed;inset:0;
+background:#000d;backdrop-filter:blur(6px);
+justify-content:center;align-items:center;z-index:99
 }
 .popup{
-  width:90%;
-  max-width:420px;
-  background:#000;
-  border:1px solid var(--neon);
-  border-radius:14px;
-  padding:16px;
-  box-shadow:0 0 30px var(--neon);
+width:90%;max-width:420px;background:#000;
+border:1px solid var(--neon);
+border-radius:14px;padding:16px;
+box-shadow:0 0 30px var(--neon)
 }
 </style>
 </head>
@@ -154,7 +96,9 @@ a{
 
   <button id="wantCompress">⚡ Want Compress?</button>
 
+  <!-- RENAME (always latest) -->
   <input id="rename" placeholder="Rename PDF (optional)">
+
   <a id="download">⬇ Download PDF</a>
 </div>
 </div>
@@ -163,21 +107,18 @@ a{
 <div class="overlay" id="overlay">
 <div class="popup">
 <h3 style="text-align:center">PDF COMPRESSOR</h3>
-
 <div class="spinner" id="cmpSpin"></div>
 
-<div id="cmpForm">
-  <p>Current Size: <b id="popCur">0 KB</b></p>
-  <input id="targetKB" type="number" placeholder="Target size (KB)">
-  <button id="doCompress">Compress</button>
+<p>Current Size: <b id="popCur">0 KB</b></p>
+<input id="targetKB" type="number" placeholder="Target size (KB)">
+<button id="doCompress">Compress</button>
 
-  <p id="newInfo" style="display:none">
-    New Size: <b id="newSize"></b>
-  </p>
+<p id="newInfo" style="display:none">
+New Size: <b id="newSize"></b>
+</p>
 
-  <button id="done" style="display:none">Done</button>
-  <button onclick="overlay.style.display='none'">Cancel</button>
-</div>
+<button id="done" style="display:none">Done</button>
+<button onclick="overlay.style.display='none'">Cancel</button>
 </div>
 </div>
 
@@ -187,8 +128,6 @@ const { jsPDF } = window.jspdf;
 const imgInput = document.getElementById("imgInput");
 const genPdf = document.getElementById("genPdf");
 const genSpin = document.getElementById("genSpin");
-
-const details = document.getElementById("details");
 const sizeText = document.getElementById("sizeText");
 const download = document.getElementById("download");
 const rename = document.getElementById("rename");
@@ -203,23 +142,37 @@ const newInfo = document.getElementById("newInfo");
 const newSize = document.getElementById("newSize");
 const done = document.getElementById("done");
 
-let activeBlob = null;
+let activeBlob=null;
 
-/* IMAGE → PDF */
-genPdf.onclick = ()=>{
+/* A4 constants */
+const PAGE_W = 210;
+const PAGE_H = 297;
+const MARGIN = 12;
+
+/* IMAGE → PDF (MAX 100) */
+genPdf.onclick=()=>{
   if(!imgInput.files.length) return alert("Select images");
+  if(imgInput.files.length>100) return alert("Max 100 images allowed");
+
   genSpin.style.display="block";
 
   setTimeout(async()=>{
     const pdf=new jsPDF("p","mm","a4");
-    const w=pdf.internal.pageSize.getWidth();
-    const h=pdf.internal.pageSize.getHeight();
 
     for(let i=0;i<imgInput.files.length;i++){
       const img=await load(await toBase64(imgInput.files[i]));
-      const s=Math.min((w*0.9)/img.width,(h*0.9)/img.height);
       if(i) pdf.addPage();
-      pdf.addImage(img,"JPEG",(w-img.width*s)/2,(h-img.height*s)/2,img.width*s,img.height*s);
+
+      const maxW = PAGE_W - MARGIN*2;
+      const maxH = PAGE_H - MARGIN*2;
+      const scale = Math.min(maxW/img.width, maxH/img.height);
+
+      const w = img.width*scale;
+      const h = img.height*scale;
+      const x = (PAGE_W - w)/2;
+      const y = (PAGE_H - h)/2;
+
+      pdf.addImage(img,"JPEG",x,y,w,h);
     }
 
     activeBlob=pdf.output("blob");
@@ -231,50 +184,64 @@ genPdf.onclick = ()=>{
 function updateMain(){
   sizeText.textContent=(activeBlob.size/1024).toFixed(1)+" KB";
   download.href=URL.createObjectURL(activeBlob);
-  download.download=(rename.value.trim()||"converted")+".pdf";
   download.style.display="block";
-  details.style.display="block";
+  document.getElementById("details").style.display="block";
 }
+
+/* ALWAYS USE LATEST RENAME */
+download.addEventListener("click",()=>{
+  const name = rename.value.trim() || "converted";
+  download.download = name + ".pdf";
+});
 
 /* WANT COMPRESS */
 wantCompress.onclick=()=>{
   overlay.style.display="flex";
-  cmpSpin.style.display="block";
   popCur.textContent=(activeBlob.size/1024).toFixed(1)+" KB";
   newInfo.style.display="none";
   done.style.display="none";
-  setTimeout(()=>cmpSpin.style.display="none",1500);
 };
 
-/* EXACT TARGET COMPRESS */
+/* REAL A4 SAFE COMPRESS */
 doCompress.onclick=async()=>{
   const target = Number(targetKB.value);
-  if(!target || target<10) return alert("Enter valid target KB");
+  if(!target || target<10) return alert("Enter target size");
 
   cmpSpin.style.display="block";
 
   const buf = await activeBlob.arrayBuffer();
   const pdfDoc = await pdfjsLib.getDocument({data:buf}).promise;
 
-  let low=0.2, high=1.0;
+  let low=0.25, high=0.95;
   let bestBlob=null, bestDiff=Infinity;
   const targetBytes = target*1024;
 
-  for(let i=0;i<6;i++){
+  for(let t=0;t<6;t++){
     const q=(low+high)/2;
-    const doc=new jsPDF();
+    const pdf=new jsPDF("p","mm","a4");
+
     for(let p=1;p<=pdfDoc.numPages;p++){
       const page=await pdfDoc.getPage(p);
       const vp=page.getViewport({scale:1.5});
       const c=document.createElement("canvas");
       c.width=vp.width; c.height=vp.height;
       await page.render({canvasContext:c.getContext("2d"),viewport:vp}).promise;
+
       const img=c.toDataURL("image/jpeg",q);
-      if(p>1) doc.addPage([vp.width,vp.height]);
-      doc.addImage(img,"JPEG",0,0,vp.width,vp.height);
+      if(p>1) pdf.addPage();
+
+      const maxW = PAGE_W - MARGIN*2;
+      const maxH = PAGE_H - MARGIN*2;
+      const scale = Math.min(maxW/vp.width, maxH/vp.height);
+      const w = vp.width*scale;
+      const h = vp.height*scale;
+      const x = (PAGE_W - w)/2;
+      const y = (PAGE_H - h)/2;
+
+      pdf.addImage(img,"JPEG",x,y,w,h);
     }
 
-    const blob=doc.output("blob");
+    const blob=pdf.output("blob");
     const diff=Math.abs(blob.size-targetBytes);
 
     if(diff<bestDiff){
@@ -300,8 +267,16 @@ done.onclick=()=>{
 };
 
 /* helpers */
-const toBase64=f=>new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(f)});
-const load=s=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.src=s});
+const toBase64=f=>new Promise(r=>{
+  const fr=new FileReader();
+  fr.onload=()=>r(fr.result);
+  fr.readAsDataURL(f);
+});
+const load=s=>new Promise(r=>{
+  const i=new Image();
+  i.onload=()=>r(i);
+  i.src=s;
+});
 </script>
 
 </body>
